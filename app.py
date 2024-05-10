@@ -4,6 +4,15 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 
+from xmlhandler import XMLHandler
+
+xmlh : XMLHandler = None
+
+def loadfile():
+    xmlh = XMLHandler(filepath=pathvariable.get())
+    xmlh.loadfile()
+    print(xmlh)
+
 def _notImplemented():
     print("not implemented")
     pass
@@ -91,7 +100,7 @@ pathinput.pack(side=tk.RIGHT, expand=True, fill='x', padx=5)
 optionsframe = tk.Frame(root, pady=5, padx=5)
 optionsframe.pack(side=tk.TOP, fill='x')
 
-loadbutton = ttk.Button(optionsframe)
+loadbutton = ttk.Button(optionsframe, command=loadfile)
 loadbutton.configure(text="Laden")
 loadbutton.pack(side=tk.LEFT)
 
@@ -104,6 +113,15 @@ showPassword.configure(text="zeige Password")
 showPassword.state(['!alternate']) # init with option disabled
 showPassword.pack(side=tk.RIGHT)
 
+# Main-Frame
+mainframe = tk.Frame(root, padx=5, pady=5)
+mainframe.pack(side=tk.TOP, fill='both')
+
+#debugtest
+for x in range(1,5):
+    for y in range(1,5):
+        v = tk.Label(mainframe, text=str(x*y))
+        v.grid(row=x, column=y, padx=5, pady=5)
 
 # Footer-Frame
 footerframe = tk.Frame(root)
