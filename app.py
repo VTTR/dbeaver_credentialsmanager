@@ -11,6 +11,21 @@ def _notImplemented():
 def callVersionWindow():
     messagebox.showinfo("Version","running on Version 1")
 
+def autodetect():
+    print("autodetection started")
+    possiblepaths = [
+        '~/Library/DBeaverData/workspace6/General/.dbeaver/credentials-config.json',
+        '~/.local/share/DBeaverData/workspace6/General/.dbeaver/credentials-config.json',
+        '~/.local/share/.DBeaverData/workspace6/General/.dbeaver/credentials-config.json',
+        '/home/fabian/privat/dbeaver_credentialsmanager/dbeaver-data-sources.xml',
+        r'C:/ProgramData/DBeaver/configuration/.dbeaver4/General/.dbeaver-data-sources.xml',
+        '~/AppData/Roaming/DBeaverData/workspace6/General/.dbeaver/credentials-config.json',
+        ]
+    for file in possiblepaths:
+        if os.path.isfile(file):
+            return file
+    return "file not found"
+
 def setPassword():
     pass
 
@@ -64,10 +79,11 @@ pathframe = tk.Frame(root, pady=5, padx=5)
 pathframe.pack(side=tk.TOP, fill='x')
 
 autodetectbutton = ttk.Button(pathframe)
-autodetectbutton.configure(text="Auto-Detect")
-autodetectbutton.pack(side=tk.LEFT)
+autodetectbutton.configure(text="Auto-Detect", command=lambda: pathvariable.set(autodetect()))
+autodetectbutton.pack(side=tk.LEFT, padx=5)
 
-pathinput = ttk.Entry(pathframe)
+pathvariable = tk.StringVar()
+pathinput = ttk.Entry(pathframe, textvariable=pathvariable)
 pathinput.pack(side=tk.RIGHT, expand=True, fill='x', padx=5)
 
 #ttk.Separator(root).pack(side=tk.TOP, fill='x', padx=0, pady=5)
