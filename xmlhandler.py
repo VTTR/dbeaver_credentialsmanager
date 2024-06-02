@@ -4,22 +4,22 @@ class XMLHandler:
     def __init__(self, filepath: str) -> None:
         self.filepath : str = filepath
         self.xmldoc : ET = None
-        self.allElements : list = []
+        self.allElements : dict = []
 
-    def _generateList(self) -> list:
-        result = []
+    def _generateDict(self) -> dict:
+        result = {}
         for elem in self.xmldoc.iterfind(".//data-source"):
-            d = {}
-            d['name'] = elem.get('name')
-            d['id'] = elem.get('id')
-            d['user'] = elem.findall('.//connection')[0].get('user')
-            d['password'] = elem.findall('.//connection')[0].get('password')
-            result.append(d)
+            id: str = elem.get('id')
+            result[id] = {}
+            result[id]['name'] = elem.get('name')
+            result[id]['user'] = elem.findall('.//connection')[0].get('user')
+            result[id]['password'] = elem.findall('.//connection')[0].get('password')
+        print(result)
         return result
     
     def loadfile(self) -> None:
         self.xmldoc = ET.parse(self.filepath)
-        self.allElements = self._generateList()
+        self.allElements = self._generateDict()
 
     def savefile(self) -> None:
         ET.ElementTree(self.xmldoc).write(self.filepath)
