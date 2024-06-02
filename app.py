@@ -7,6 +7,7 @@ from tkinter import ttk
 from xmlhandler import XMLHandler
 
 xmlh : XMLHandler = None
+allSelections : list = []
 
 def loadfile():
     xmlh = XMLHandler(filepath=pathvariable.get())
@@ -20,6 +21,18 @@ def _notImplemented():
 
 def callVersionWindow():
     messagebox.showinfo("Version","running on Version 1")
+
+def selectAll():
+    for val in allSelections:
+        val.set(1)
+
+def deselectAll():
+    for val in allSelections:
+        val.set(0)
+
+def invertSelection():
+    for val in allSelections:
+        val.set(0 if val.get()==1 else 1)
 
 def autodetect():
     print("autodetection started")
@@ -50,13 +63,12 @@ def renderTable(master, data:dict={}):
     tk.Label(master, text="Password", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=5)
     if len(data) == 0: return
 
+    allSelections.clear()
 
     for row, key in enumerate(data.keys(), start=2):
-        selectbutton = tk.Checkbutton(master, borderwidth=borderwith, relief=borderstyle)
-
-        #selectbutton = ttk.Checkbutton(master)
-        #selectbutton.configure(borderwith=borderwith)
-        #selectbutton.state(['!alternate']) # init with option disabled
+        selection_variable = tk.IntVar()
+        allSelections.append(selection_variable)
+        selectbutton = tk.Checkbutton(master, variable=selection_variable, borderwidth=borderwith, relief=borderstyle)
         selectbutton.grid(row=row, column=1)
         tk.Label(master, text=key, borderwidth=borderwith, relief=borderstyle).grid(row=row, column=2)
         tk.Label(master, text=data[key]['name'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=3)
@@ -97,9 +109,9 @@ filemenu.add_command(label="Exit", command=root.quit)
 # Menu: Auswahl
 selectionmenu = tk.Menu(menu, tearoff=0)
 menu.add_cascade(label="Auswahl", menu=selectionmenu)
-selectionmenu.add_command(label="Alles auswählen", command=_notImplemented)
-selectionmenu.add_command(label="Alles abwählen", command=_notImplemented)
-selectionmenu.add_command(label="Auswahl umkehren", command=_notImplemented)
+selectionmenu.add_command(label="Alles auswählen", command=selectAll)
+selectionmenu.add_command(label="Alles abwählen", command=deselectAll)
+selectionmenu.add_command(label="Auswahl umkehren", command=invertSelection)
 
 # Menu: Über
 aboutmenu = tk.Menu(menu, tearoff=0)
