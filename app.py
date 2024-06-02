@@ -12,6 +12,7 @@ def loadfile():
     xmlh = XMLHandler(filepath=pathvariable.get())
     xmlh.loadfile()
     print(xmlh)
+    renderTable(mainframe, data=xmlh.allElements)
 
 def _notImplemented():
     print("not implemented")
@@ -38,11 +39,36 @@ def autodetect():
 def setPassword():
     pass
 
+def renderTable(master, data:dict={}):
+    # render header
+    borderwith : int = 2
+    borderstyle : str = "ridge"
+    tk.Label(master, text="[]", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=1)
+    tk.Label(master, text="ID", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=2)
+    tk.Label(master, text="Displayname", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=3)
+    tk.Label(master, text="User", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=4)
+    tk.Label(master, text="Password", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=5)
+    if len(data) == 0: return
+
+
+    for row, key in enumerate(data.keys(), start=2):
+        selectbutton = tk.Checkbutton(master, borderwidth=borderwith, relief=borderstyle)
+
+        #selectbutton = ttk.Checkbutton(master)
+        #selectbutton.configure(borderwith=borderwith)
+        #selectbutton.state(['!alternate']) # init with option disabled
+        selectbutton.grid(row=row, column=1)
+        tk.Label(master, text=key, borderwidth=borderwith, relief=borderstyle).grid(row=row, column=2)
+        tk.Label(master, text=data[key]['name'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=3)
+        tk.Label(master, text=data[key]['user'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=4)
+        tk.Label(master, text=data[key]['password'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=5)
+
+
 root = tk.Tk()
 root.title("DBeaver Credentialsmanager")
-root.geometry("700x300")
-root.minsize(700,300)
-root.maxsize(900,800)
+root.geometry("900x500")
+root.minsize(900,500)
+#root.maxsize(1200,800)
 
 # style
 if 'winnative' in ttk.Style().theme_names():
@@ -116,12 +142,6 @@ showPassword.pack(side=tk.RIGHT)
 # Main-Frame
 mainframe = tk.Frame(root, padx=5, pady=5)
 mainframe.pack(side=tk.TOP, fill='both')
-
-#debugtest
-for x in range(1,5):
-    for y in range(1,5):
-        v = tk.Label(mainframe, text=str(x*y))
-        v.grid(row=x, column=y, padx=5, pady=5)
 
 # Footer-Frame
 footerframe = tk.Frame(root)
