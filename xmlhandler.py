@@ -29,3 +29,5 @@ class XMLHandler:
     def __str__(self) -> str:
         return f"XML-File ({self.filepath}) contains {len(self.allElements)} elements"
     
+    def __len__(self) -> int:
+        return len(self.allElements)

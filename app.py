@@ -13,7 +13,7 @@ allSelections : list = []
 def loadfile():
     xmlh.setPath(pathvariable.get())
     xmlh.loadfile()
-    renderTable(mainframe, data=xmlh.allElements)
+    renderTable(mainframe)
 
 def _notImplemented():
     print("not implemented")
@@ -36,7 +36,7 @@ def invertSelection():
 
 def togglePasswordVisibility():
     showPasswordValue.set(0 if showPasswordValue.get()==1 else 1)
-    renderTable(mainframe, data=xmlh.allElements)
+    renderTable(mainframe)
 
 def autodetect():
     print("autodetection started")
@@ -56,10 +56,12 @@ def autodetect():
 def setPassword():
     pass
 
-def renderTable(master, data:dict={}):
+def renderTable(master):
     # clearing
     for widget in master.winfo_children():
         widget.destroy()
+
+    if len(xmlh) == 0: return
 
     # render header
     borderwith : int = 2
@@ -69,19 +71,19 @@ def renderTable(master, data:dict={}):
     tk.Label(master, text="Displayname", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=3)
     tk.Label(master, text="User", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=4)
     tk.Label(master, text="Password", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=5)
-    if len(data) == 0: return
 
     allSelections.clear()
 
-    for row, key in enumerate(data.keys(), start=2):
+    for row, key in enumerate(xmlh.allElements.keys(), start=2):
+
         selection_variable = tk.IntVar()
         allSelections.append(selection_variable)
         selectbutton = tk.Checkbutton(master, variable=selection_variable, borderwidth=borderwith, relief=borderstyle)
         selectbutton.grid(row=row, column=1)
         tk.Label(master, text=key, borderwidth=borderwith, relief=borderstyle).grid(row=row, column=2)
-        tk.Label(master, text=data[key]['name'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=3)
-        tk.Label(master, text=data[key]['user'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=4)
-        password = data[key]['password'] if showPasswordValue.get() == 0 else decrypt(data[key]['password'])
+        tk.Label(master, text=xmlh.allElements[key]['name'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=3)
+        tk.Label(master, text=xmlh.allElements[key]['user'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=4)
+        password = xmlh.allElements[key]['password'] if showPasswordValue.get() == 0 else decrypt(xmlh.allElements[key]['password'])
         tk.Label(master, text=password, borderwidth=borderwith, relief=borderstyle).grid(row=row, column=5)
 
 
