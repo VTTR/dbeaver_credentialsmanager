@@ -1,10 +1,10 @@
 import xml.etree.ElementTree as ET
 
 class XMLHandler:
-    def __init__(self, filepath: str) -> None:
+    def __init__(self, filepath: str = None) -> None:
         self.filepath : str = filepath
         self.xmldoc : ET = None
-        self.allElements : dict = []
+        self.allElements : dict = {}
 
     def _generateDict(self) -> dict:
         result = {}
@@ -14,9 +14,11 @@ class XMLHandler:
             result[id]['name'] = elem.get('name')
             result[id]['user'] = elem.findall('.//connection')[0].get('user')
             result[id]['password'] = elem.findall('.//connection')[0].get('password')
-        print(result)
         return result
     
+    def setPath(self, newPath: str) -> None:
+        self.filepath = newPath
+
     def loadfile(self) -> None:
         self.xmldoc = ET.parse(self.filepath)
         self.allElements = self._generateDict()
