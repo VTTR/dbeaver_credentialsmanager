@@ -5,14 +5,14 @@ from tkinter import messagebox
 from tkinter import ttk
 
 from xmlhandler import XMLHandler
+from dbeavercrypto import decrypt
 
-xmlh : XMLHandler = None
+xmlh : XMLHandler = XMLHandler()
 allSelections : list = []
 
 def loadfile():
-    xmlh = XMLHandler(filepath=pathvariable.get())
+    xmlh.setPath(pathvariable.get())
     xmlh.loadfile()
-    print(xmlh)
     renderTable(mainframe, data=xmlh.allElements)
 
 def _notImplemented():
@@ -34,6 +34,10 @@ def invertSelection():
     for val in allSelections:
         val.set(0 if val.get()==1 else 1)
 
+def togglePasswordVisibility():
+    showPasswordValue.set(0 if showPasswordValue.get()==1 else 1)
+    renderTable(mainframe, data=xmlh.allElements)
+
 def autodetect():
     print("autodetection started")
     possiblepaths = [
@@ -53,6 +57,10 @@ def setPassword():
     pass
 
 def renderTable(master, data:dict={}):
+    # clearing
+    for widget in master.winfo_children():
+        widget.destroy()
+
     # render header
     borderwith : int = 2
     borderstyle : str = "ridge"
@@ -73,7 +81,8 @@ def renderTable(master, data:dict={}):
         tk.Label(master, text=key, borderwidth=borderwith, relief=borderstyle).grid(row=row, column=2)
         tk.Label(master, text=data[key]['name'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=3)
         tk.Label(master, text=data[key]['user'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=4)
-        tk.Label(master, text=data[key]['password'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=5)
+        password = data[key]['password'] if showPasswordValue.get() == 0 else decrypt(data[key]['password'])
+        tk.Label(master, text=password, borderwidth=borderwith, relief=borderstyle).grid(row=row, column=5)
 
 
 root = tk.Tk()
@@ -146,7 +155,8 @@ savebutton = ttk.Button(optionsframe)
 savebutton.configure(text="Speichern")
 savebutton.pack(side=tk.LEFT)
 
-showPassword = ttk.Checkbutton(optionsframe)
+showPasswordValue = tk.IntVar()
+showPassword = ttk.Checkbutton(optionsframe, command=togglePasswordVisibility)
 showPassword.configure(text="zeige Password")
 showPassword.state(['!alternate']) # init with option disabled
 showPassword.pack(side=tk.RIGHT)
