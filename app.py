@@ -8,7 +8,6 @@ from xmlhandler import XMLHandler
 from dbeavercrypto import decrypt
 
 xmlh : XMLHandler = XMLHandler()
-allSelections : list = []
 
 def loadfile():
     xmlh.setPath(pathvariable.get())
@@ -23,16 +22,20 @@ def callVersionWindow():
     messagebox.showinfo("Version","running on Version 1")
 
 def selectAll():
-    for val in allSelections:
-        val.set(1)
+    for tree in mainframe.winfo_children():
+        if not isinstance(tree, ttk.Treeview): continue
+        tree.selection_set(tree.get_children())
+
 
 def deselectAll():
-    for val in allSelections:
-        val.set(0)
+    for tree in mainframe.winfo_children():
+        if not isinstance(tree, ttk.Treeview): continue
+        tree.selection_set()
 
 def invertSelection():
-    for val in allSelections:
-        val.set(0 if val.get()==1 else 1)
+    for tree in mainframe.winfo_children():
+        if not isinstance(tree, ttk.Treeview): continue
+        tree.selection_toggle(tree.get_children())
 
 def togglePasswordVisibility():
     showPasswordValue.set(0 if showPasswordValue.get()==1 else 1)
@@ -61,30 +64,24 @@ def renderTable(master):
     for widget in master.winfo_children():
         widget.destroy()
 
+    table = ttk.Treeview(master, selectmode='extended')
+    table.pack(side='left', expand=True, fill='both')
+    table['columns'] = ['displayname', 'user', 'password', 'id']
+    table.heading('displayname', text="Displayname")
+    table.heading('user', text="User")
+    table.heading('password', text="Password")
+    table.heading('id', text="ID")
+    table['show'] = 'headings'
+
     if len(xmlh) == 0: return
-
-    # render header
-    borderwith : int = 2
-    borderstyle : str = "ridge"
-    tk.Label(master, text="[]", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=1)
-    tk.Label(master, text="ID", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=2)
-    tk.Label(master, text="Displayname", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=3)
-    tk.Label(master, text="User", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=4)
-    tk.Label(master, text="Password", borderwidth=borderwith, relief=borderstyle).grid(row=1, column=5)
-
-    allSelections.clear()
-
-    for row, key in enumerate(xmlh.allElements.keys(), start=2):
-
-        selection_variable = tk.IntVar()
-        allSelections.append(selection_variable)
-        selectbutton = tk.Checkbutton(master, variable=selection_variable, borderwidth=borderwith, relief=borderstyle)
-        selectbutton.grid(row=row, column=1)
-        tk.Label(master, text=key, borderwidth=borderwith, relief=borderstyle).grid(row=row, column=2)
-        tk.Label(master, text=xmlh.allElements[key]['name'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=3)
-        tk.Label(master, text=xmlh.allElements[key]['user'], borderwidth=borderwith, relief=borderstyle).grid(row=row, column=4)
-        password = xmlh.allElements[key]['password'] if showPasswordValue.get() == 0 else decrypt(xmlh.allElements[key]['password'])
-        tk.Label(master, text=password, borderwidth=borderwith, relief=borderstyle).grid(row=row, column=5)
+    for index, item in enumerate(xmlh.allElements, start=0):
+        data = xmlh.allElements[item]
+        table.insert(parent='', index=index, values=(
+            data['name'],
+            data['user'],
+            data['password'] if showPasswordValue.get() == 0 else decrypt(data['password']),
+            item
+        ))
 
 
 root = tk.Tk()
@@ -166,6 +163,7 @@ showPassword.pack(side=tk.RIGHT)
 # Main-Frame
 mainframe = tk.Frame(root, padx=5, pady=5)
 mainframe.pack(side=tk.TOP, fill='both')
+renderTable(mainframe)
 
 # Footer-Frame
 footerframe = tk.Frame(root)
