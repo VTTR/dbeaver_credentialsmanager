@@ -16,6 +16,9 @@ def loadfile():
     xmlh.loadfile()
     renderTable(mainframe)
 
+def savefile():
+    xmlh.savefile()
+
 def _notImplemented():
     print("not implemented")
     pass
@@ -180,7 +183,7 @@ loadbutton = ttk.Button(optionsframe, command=loadfile)
 loadbutton.configure(text="Laden")
 loadbutton.pack(side=tk.LEFT)
 
-savebutton = ttk.Button(optionsframe)
+savebutton = ttk.Button(optionsframe, command=savefile)
 savebutton.configure(text="Speichern")
 savebutton.pack(side=tk.LEFT)
 

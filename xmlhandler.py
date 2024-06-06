@@ -45,7 +45,7 @@ class XMLHandler:
         self.xmldoc = ET.parse(self.filepath)
 
     def savefile(self) -> None:
-        ET.ElementTree(self.xmldoc).write(self.filepath)
+        self.xmldoc.write(file_or_filename=self.filepath)
 
     def __str__(self) -> str:
         return f"XML-File ({self.filepath}) contains {len(self.allElements)} elements"
