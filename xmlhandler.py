@@ -31,7 +31,6 @@ class XMLHandler:
         element = self.xmldoc.find(f".//data-source[@id='{id}']/connection")
         element.set('user', newUser)
 
-
     @updateDictAfterProcessing
     def setPassword(self, id: str, newPassword: str) -> None:
         if id not in self.allElements: raise NameError(f'{id} not in xml')
