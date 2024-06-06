@@ -2,10 +2,11 @@ import os
 
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import simpledialog
 from tkinter import ttk
 
 from xmlhandler import XMLHandler
-from dbeavercrypto import decrypt
+from dbeavercrypto import decrypt, encrypt
 
 xmlh : XMLHandler = XMLHandler()
 
@@ -56,8 +57,25 @@ def autodetect():
             return file
     return "file not found"
 
-def setPassword():
-    pass
+def setNewPassword() -> None:
+    newPassword: str = tk.simpledialog.askstring("input", "new password", parent=root, show='' if showPasswordValue.get() == 1 else '*')
+    print(f"setting new password {newPassword[0]}***")
+    for tree in mainframe.winfo_children():
+        if not isinstance(tree, ttk.Treeview): continue
+        for itemid in tree.selection():
+            dbeaverid = tree.item(itemid)['values'][-1]
+            xmlh.setPassword(id=dbeaverid, newPassword=encrypt(newPassword))
+    renderTable(mainframe)
+
+def setNewUser() -> None:
+    newUser: str = tk.simpledialog.askstring("input", "new username", parent=root)
+    print(f"setting new User: {newUser}")
+    for tree in mainframe.winfo_children():
+        if not isinstance(tree, ttk.Treeview): continue
+        for itemid in tree.selection():
+            dbeaverid = tree.item(itemid)['values'][-1]
+            xmlh.setUser(id=dbeaverid, newUser=newUser)
+    renderTable(mainframe)
 
 def renderTable(master):
     # clearing
@@ -177,11 +195,11 @@ ttk.Sizegrip(footerframe).pack(side=tk.RIGHT)
 actionframe = tk.Frame(root, padx=5, pady=2)
 actionframe.pack(side=tk.BOTTOM, fill='x')
 
-userbutton = ttk.Button(actionframe)
+userbutton = ttk.Button(actionframe, command=setNewUser)
 userbutton.configure(text="setze User",padding=5)
 userbutton.pack(side=tk.LEFT, padx=5)
 
-passwordbutton = ttk.Button(actionframe)
+passwordbutton = ttk.Button(actionframe, command=setNewPassword)
 passwordbutton.configure(text="setze Password", padding=5)
 passwordbutton.pack(side=tk.LEFT, padx=5)
 
