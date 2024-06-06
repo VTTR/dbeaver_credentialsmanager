@@ -3,6 +3,7 @@ import os
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import simpledialog
+from tkinter import filedialog
 from tkinter import ttk
 
 from xmlhandler import XMLHandler
@@ -21,6 +22,16 @@ def _notImplemented():
 
 def callVersionWindow():
     messagebox.showinfo("Version","running on Version 1")
+
+def openFileSelector():
+    path = filedialog.askopenfile(
+        title="Datei öffnen",
+        filetypes=(
+            ("XML-Files", "*.xml"),
+            ("All-Files", "*.*")
+        )
+    ).name
+    pathvariable.set(path)
 
 def selectAll():
     for tree in mainframe.winfo_children():
@@ -130,6 +141,7 @@ root.config(menu=menu)
 # Menü: Datei
 filemenu = tk.Menu(menu, tearoff=0)
 menu.add_cascade(label="Datei", menu=filemenu)
+filemenu.add_command(label="Datei öffnen..", command=openFileSelector)
 filemenu.add_command(label="Exit", command=root.quit)
 
 # Menu: Auswahl
@@ -156,7 +168,7 @@ autodetectbutton.configure(text="Auto-Detect", command=lambda: pathvariable.set(
 autodetectbutton.pack(side=tk.LEFT, padx=5)
 
 pathvariable = tk.StringVar()
-pathinput = ttk.Entry(pathframe, textvariable=pathvariable)
+pathinput = ttk.Entry(pathframe, textvariable=pathvariable, validate='focusin', validatecommand=openFileSelector)
 pathinput.pack(side=tk.RIGHT, expand=True, fill='x', padx=5)
 
 #ttk.Separator(root).pack(side=tk.TOP, fill='x', padx=0, pady=5)
