@@ -120,28 +120,20 @@ root = tk.Tk()
 root.title("DBeaver Credentialsmanager")
 root.geometry("900x500")
 root.minsize(900,500)
-#root.maxsize(1200,800)
+
+# icon
+if os.name == 'nt':
+    from ctypes import windll  # Only exists on Windows.
+    myappid = "vttr.dbeaver_credentialsmanager.1"
+    windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 # style
 if 'winnative' in ttk.Style().theme_names():
     ttk.Style().theme_use('winnative')
-    # root.iconbitmap("favicon_32bit.ico")
-    from ctypes import windll  # Only exists on Windows.
-    myappid = "vttr.dbeaver_credentialsmanager.1"
-    windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 else:
     ttk.Style().theme_use('default')
 
-
-# icon
-#small_icon = tk.PhotoImage(file="icon-16.png")
-#large_icon = tk.PhotoImage(file="icon-32.png")
-#root.iconphoto(False, large_icon, small_icon)
-#root.iconbitmap("icon.ico")
-
 img = tk.PhotoImage(file=f'{os.path.dirname(__file__)}/assets/icon.gif')
-# root.tk.call('wm', 'iconphoto', root._w, img)
-# root.tk.call('wm', 'group', root._w, root._w)
 root.iconphoto(False, img, img)
 
 menu = tk.Menu(root)
