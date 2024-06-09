@@ -23,6 +23,22 @@ def _notImplemented():
     print("not implemented")
     pass
 
+def callAboutWindow():
+    import webbrowser
+    def callback(url: str):
+        webbrowser.open_new(url)
+
+    about_window = tk.Toplevel()
+    about_window.title("About")
+    # about_window.config(width=400, height=300)
+    about_window.geometry("400x300")
+    ttk.Button(about_window, text="close", command=about_window.destroy).pack(side=tk.BOTTOM)
+
+    repolink = tk.Label(about_window, text="Github-Repository", fg="blue", cursor="hand2")
+    repolink.pack()
+    repolink.bind("<Button-1>", lambda e: callback("https://github.com/VTTR/dbeaver_credentialsmanager"))
+
+
 def callVersionWindow():
     messagebox.showinfo("Version","running on Version 1")
 
@@ -156,7 +172,7 @@ selectionmenu.add_command(label="Auswahl umkehren", command=invertSelection)
 aboutmenu = tk.Menu(menu, tearoff=0)
 menu.add_cascade(label="Über", menu=aboutmenu)
 aboutmenu.add_command(label="Version", command=callVersionWindow)
-aboutmenu.add_command(label="Über", command=_notImplemented)
+aboutmenu.add_command(label="Über", command=callAboutWindow)
 
 menu.add_command(label="Exit", command=root.quit)
 
