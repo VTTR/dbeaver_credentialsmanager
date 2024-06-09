@@ -54,18 +54,21 @@ def openFileSelector():
 
 def selectAll():
     for tree in mainframe.winfo_children():
-        if not isinstance(tree, ttk.Treeview): continue
+        if not isinstance(tree, ttk.Treeview):
+            continue
         tree.selection_set(tree.get_children())
 
 
 def deselectAll():
     for tree in mainframe.winfo_children():
-        if not isinstance(tree, ttk.Treeview): continue
+        if not isinstance(tree, ttk.Treeview):
+            continue
         tree.selection_set()
 
 def invertSelection():
     for tree in mainframe.winfo_children():
-        if not isinstance(tree, ttk.Treeview): continue
+        if not isinstance(tree, ttk.Treeview):
+            continue
         tree.selection_toggle(tree.get_children())
 
 def togglePasswordVisibility():
@@ -88,20 +91,22 @@ def autodetect():
     return "file not found"
 
 def setNewPassword() -> None:
-    newPassword: str = tk.simpledialog.askstring("input", "new password", parent=root, show='' if showPasswordValue.get() == 1 else '*')
+    newPassword: str = simpledialog.askstring("input", "new password", parent=root, show='' if showPasswordValue.get() == 1 else '*')
     print(f"setting new password {newPassword[0]}***")
     for tree in mainframe.winfo_children():
-        if not isinstance(tree, ttk.Treeview): continue
+        if not isinstance(tree, ttk.Treeview):
+            continue
         for itemid in tree.selection():
             dbeaverid = tree.item(itemid)['values'][-1]
             xmlh.setPassword(id=dbeaverid, newPassword=encrypt(newPassword))
     renderTable(mainframe)
 
 def setNewUser() -> None:
-    newUser: str = tk.simpledialog.askstring("input", "new username", parent=root)
+    newUser: str = simpledialog.askstring("input", "new username", parent=root)
     print(f"setting new User: {newUser}")
     for tree in mainframe.winfo_children():
-        if not isinstance(tree, ttk.Treeview): continue
+        if not isinstance(tree, ttk.Treeview):
+            continue
         for itemid in tree.selection():
             dbeaverid = tree.item(itemid)['values'][-1]
             xmlh.setUser(id=dbeaverid, newUser=newUser)
@@ -121,7 +126,9 @@ def renderTable(master):
     table.heading('id', text="ID")
     table['show'] = 'headings'
 
-    if len(xmlh) == 0: return
+    if len(xmlh) == 0:
+        return
+
     for index, item in enumerate(xmlh.allElements, start=0):
         data = xmlh.allElements[item]
         table.insert(parent='', index=index, values=(
