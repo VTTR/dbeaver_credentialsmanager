@@ -78,12 +78,7 @@ def togglePasswordVisibility():
 def autodetect():
     print("autodetection started")
     possiblepaths = [
-        '~/Library/DBeaverData/workspace6/General/.dbeaver/credentials-config.json',
-        '~/.local/share/DBeaverData/workspace6/General/.dbeaver/credentials-config.json',
-        '~/.local/share/.DBeaverData/workspace6/General/.dbeaver/credentials-config.json',
-        '/home/fabian/privat/dbeaver_credentialsmanager/dbeaver-data-sources.xml',
-        r'C:/ProgramData/DBeaver/configuration/.dbeaver4/General/.dbeaver-data-sources.xml',
-        '~/AppData/Roaming/DBeaverData/workspace6/General/.dbeaver/credentials-config.json',
+        r'C:/ProgramData/DBeaver/configuration/.dbeaver4/General/.dbeaver-data-sources.xml'
         ]
     for file in possiblepaths:
         if os.path.isfile(file):
