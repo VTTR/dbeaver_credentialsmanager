@@ -251,7 +251,7 @@ passwordbutton.pack(side=tk.LEFT, padx=5)
 
 renderDBeaverRunningWarning()
 
-# disable action buttons in case of a running a dbeaver instance
+# disable action buttons in case of a running dbeaver instance
 if isDBeaverRunning():
     userbutton.state(["disabled"])
     passwordbutton.state(["disabled"])
