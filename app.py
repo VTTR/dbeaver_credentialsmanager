@@ -1,5 +1,6 @@
 import os
 
+import subprocess
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import simpledialog
@@ -135,14 +136,16 @@ def renderTable(master):
 
 def isDBeaverRunning() -> bool:
     if os.name == 'nt':
-        #TODO: missing code: windows implementation of detecting running dbeaver.exe processes
-        pass
-    return True
+        processname: str = 'dbeaver.exe'
+        call: str = f'TASKLIST /FI "imagename eq {processname}"'
+        output: str = subprocess.check_output(call).decode()
+        last_line: str = output.strip().split('\r\n')[-1]
+        return last_line.lower().startswith(processname.lower())
+    return False
 
 def renderDBeaverRunningWarning() -> None:
     if not isDBeaverRunning():
         return
-    #actionframe
     warningtext = """WARNING: A RUNNING DBEAVER INSTANCE DETECTED
     started in readonly mode"""
     warninglabel = tk.Label(master=actionframe, text=warningtext, background='red')
