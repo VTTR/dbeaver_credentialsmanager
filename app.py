@@ -216,7 +216,7 @@ showPassword.pack(side=tk.RIGHT)
 
 # Main-Frame
 mainframe = tk.Frame(root, padx=5, pady=5)
-mainframe.pack(side=tk.TOP, fill='both')
+mainframe.pack(side=tk.TOP, fill='both', expand=True)
 renderTable(mainframe)
 
 # Footer-Frame
