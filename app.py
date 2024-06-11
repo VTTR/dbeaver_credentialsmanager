@@ -133,6 +133,21 @@ def renderTable(master):
             item
         ))
 
+def isDBeaverRunning() -> bool:
+    if os.name == 'nt':
+        #TODO: missing code: windows implementation of detecting running dbeaver.exe processes
+        pass
+    return True
+
+def renderDBeaverRunningWarning() -> None:
+    if not isDBeaverRunning():
+        return
+    #actionframe
+    warningtext = """WARNING: A RUNNING DBEAVER INSTANCE DETECTED
+    started in readonly mode"""
+    warninglabel = tk.Label(master=actionframe, text=warningtext, background='red')
+    warninglabel.pack(side=tk.LEFT, fill='x' ,expand=True)
+
 
 root = tk.Tk()
 root.title("DBeaver Credentialsmanager")
@@ -233,6 +248,13 @@ userbutton.pack(side=tk.LEFT, padx=5)
 passwordbutton = ttk.Button(actionframe, command=setNewPassword)
 passwordbutton.configure(text="setze Password", padding=5)
 passwordbutton.pack(side=tk.LEFT, padx=5)
+
+renderDBeaverRunningWarning()
+
+# disable action buttons in case of a running a dbeaver instance
+if isDBeaverRunning():
+    userbutton.state(["disabled"])
+    passwordbutton.state(["disabled"])
 
 ttk.Separator(root).pack(side=tk.BOTTOM, expand=False, fill='x', pady=2)
 
