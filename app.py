@@ -149,7 +149,7 @@ def renderDBeaverRunningWarning() -> None:
     warningtext = """WARNING: A RUNNING DBEAVER INSTANCE DETECTED
     started in readonly mode"""
     warninglabel = tk.Label(master=actionframe, text=warningtext, background='red')
-    warninglabel.pack(side=tk.LEFT, fill='x' ,expand=True)
+    warninglabel.pack(side=tk.LEFT, fill='x', expand=True)
 
 
 root = tk.Tk()
