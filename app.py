@@ -1,4 +1,5 @@
 import os
+if os.name == 'nt': from ctypes import windll
 
 import subprocess
 import tkinter as tk
@@ -136,9 +137,18 @@ def renderTable(master):
 
 def isDBeaverRunning() -> bool:
     if os.name == 'nt':
+        # thanks to https://stackoverflow.com/questions/77370805/using-python-subprocess-to-open-powershell-causes-encoding-errors-in-stdout
+        # Save the current console output code page and switch to 65001 (UTF-8)
+        previousCp = windll.kernel32.GetConsoleOutputCP()
+        windll.kernel32.SetConsoleOutputCP(65001)
+
         processname: str = 'dbeaver.exe'
         call: str = f'TASKLIST /FI "imagename eq {processname}"'
-        output: str = subprocess.check_output(call).decode()
+        output: str = subprocess.check_output(call).decode('utf-8')
+
+        # Restore the previous output console code page.
+        windll.kernel32.SetConsoleOutputCP(previousCp)
+
         last_line: str = output.strip().split('\r\n')[-1]
         return last_line.lower().startswith(processname.lower())
     return False

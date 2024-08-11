@@ -10,5 +10,5 @@
 DBeaver Credentials Manager is a small tool written with Python builtin libraries. It is designed to allow users to edit their stored usernames and passwords.
 
 ## upcoming features
-* confirm modal when closing
-* encoding error on powershell
+- [ ] confirm modal when closing
+- [x] encoding error on powershell
