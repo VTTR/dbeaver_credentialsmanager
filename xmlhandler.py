@@ -49,6 +49,7 @@ class XMLHandler:
         self.xmldoc = ET.parse(self.filepath)
 
     def savefile(self) -> None:
+        if not self.xmldoc: return
         self.xmldoc.write(file_or_filename=self.filepath)
 
     def __str__(self) -> str:

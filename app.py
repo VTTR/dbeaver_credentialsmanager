@@ -20,6 +20,8 @@ def loadfile():
 
 def savefile():
     xmlh.savefile()
+    global somethingHasChangedFlag
+    somethingHasChangedFlag = False
 
 def _notImplemented():
     print("not implemented")
@@ -90,6 +92,8 @@ def autodetect():
 def setNewPassword() -> None:
     newPassword: str = simpledialog.askstring("input", "new password", parent=root, show='' if showPasswordValue.get() == 1 else '*')
     print(f"setting new password {newPassword[0]}***")
+    global somethingHasChangedFlag
+    somethingHasChangedFlag = True
     for tree in mainframe.winfo_children():
         if not isinstance(tree, ttk.Treeview):
             continue
@@ -101,6 +105,8 @@ def setNewPassword() -> None:
 def setNewUser() -> None:
     newUser: str = simpledialog.askstring("input", "new username", parent=root)
     print(f"setting new User: {newUser}")
+    global somethingHasChangedFlag
+    somethingHasChangedFlag = True
     for tree in mainframe.winfo_children():
         if not isinstance(tree, ttk.Treeview):
             continue
@@ -162,10 +168,29 @@ def renderDBeaverRunningWarning() -> None:
     warninglabel.pack(side=tk.LEFT, fill='x', expand=True)
 
 
+def exitApplication() -> None:
+    print("Exiting Application")
+
+    if somethingHasChangedFlag == False:
+        return root.destroy()
+    
+    saverequested: bool = messagebox.askyesnocancel("Exit", "Some changes hasn't been saved. Do you want to save before exiting?")
+    if saverequested == True: 
+        savefile()
+        root.destroy()
+    if saverequested == False: 
+        root.destroy()
+    if saverequested is None:
+        return
+
+
+somethingHasChangedFlag: bool = False
+
 root = tk.Tk()
 root.title("DBeaver Credentialsmanager")
 root.geometry("900x500")
 root.minsize(900,500)
+root.protocol('WM_DELETE_WINDOW', exitApplication)
 
 # icon
 if os.name == 'nt':
@@ -189,7 +214,7 @@ root.config(menu=menu)
 filemenu = tk.Menu(menu, tearoff=0)
 menu.add_cascade(label="Datei", menu=filemenu)
 filemenu.add_command(label="Datei öffnen..", command=openFileSelector)
-filemenu.add_command(label="Exit", command=root.quit)
+filemenu.add_command(label="Exit", command=exitApplication)
 
 # Menu: Auswahl
 selectionmenu = tk.Menu(menu, tearoff=0)
@@ -204,7 +229,7 @@ menu.add_cascade(label="Über", menu=aboutmenu)
 aboutmenu.add_command(label="Version", command=callVersionWindow)
 aboutmenu.add_command(label="Über", command=callAboutWindow)
 
-menu.add_command(label="Exit", command=root.quit)
+menu.add_command(label="Exit", command=exitApplication)
 
 # Pfad-Frame
 pathframe = tk.Frame(root, pady=5, padx=5)
