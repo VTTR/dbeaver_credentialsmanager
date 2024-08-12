@@ -1,5 +1,6 @@
 import os
-if os.name == 'nt': from ctypes import windll
+if os.name == 'nt':
+    from ctypes import windll  # Only exists on Windows.
 
 import subprocess
 import tkinter as tk
@@ -11,21 +12,25 @@ from tkinter import ttk
 from xmlhandler import XMLHandler
 from dbeavercrypto import decrypt, encrypt
 
-xmlh : XMLHandler = XMLHandler()
+xmlh: XMLHandler = XMLHandler()
+somethingHasChangedFlag: bool = False
 
 def loadfile():
     xmlh.setPath(pathvariable.get())
     xmlh.loadfile()
     renderTable(mainframe)
 
+
 def savefile():
     xmlh.savefile()
     global somethingHasChangedFlag
     somethingHasChangedFlag = False
 
+
 def _notImplemented():
     print("not implemented")
     pass
+
 
 def callAboutWindow():
     import webbrowser
@@ -46,6 +51,7 @@ def callAboutWindow():
 def callVersionWindow():
     messagebox.showinfo("Version","running on Version 1")
 
+
 def openFileSelector():
     path = filedialog.askopenfile(
         title="Datei öffnen",
@@ -55,6 +61,7 @@ def openFileSelector():
         )
     ).name
     pathvariable.set(path)
+
 
 def selectAll():
     for tree in mainframe.winfo_children():
@@ -69,15 +76,18 @@ def deselectAll():
             continue
         tree.selection_set()
 
+
 def invertSelection():
     for tree in mainframe.winfo_children():
         if not isinstance(tree, ttk.Treeview):
             continue
         tree.selection_toggle(tree.get_children())
 
+
 def togglePasswordVisibility():
     showPasswordValue.set(0 if showPasswordValue.get()==1 else 1)
     renderTable(mainframe)
+
 
 def autodetect():
     print("autodetection started")
@@ -88,6 +98,7 @@ def autodetect():
         if os.path.isfile(file):
             return file
     return "file not found"
+
 
 def setNewPassword() -> None:
     newPassword: str = simpledialog.askstring("input", "new password", parent=root, show='' if showPasswordValue.get() == 1 else '*')
@@ -102,6 +113,7 @@ def setNewPassword() -> None:
             xmlh.setPassword(id=dbeaverid, newPassword=encrypt(newPassword))
     renderTable(mainframe)
 
+
 def setNewUser() -> None:
     newUser: str = simpledialog.askstring("input", "new username", parent=root)
     print(f"setting new User: {newUser}")
@@ -114,6 +126,7 @@ def setNewUser() -> None:
             dbeaverid = tree.item(itemid)['values'][-1]
             xmlh.setUser(id=dbeaverid, newUser=newUser)
     renderTable(mainframe)
+
 
 def renderTable(master):
     # clearing
@@ -141,6 +154,7 @@ def renderTable(master):
             item
         ))
 
+
 def isDBeaverRunning() -> bool:
     if os.name == 'nt':
         # thanks to https://stackoverflow.com/questions/77370805/using-python-subprocess-to-open-powershell-causes-encoding-errors-in-stdout
@@ -159,6 +173,7 @@ def isDBeaverRunning() -> bool:
         return last_line.lower().startswith(processname.lower())
     return False
 
+
 def renderDBeaverRunningWarning() -> None:
     if not isDBeaverRunning():
         return
@@ -171,20 +186,18 @@ def renderDBeaverRunningWarning() -> None:
 def exitApplication() -> None:
     print("Exiting Application")
 
-    if somethingHasChangedFlag == False:
+    if not somethingHasChangedFlag:
         return root.destroy()
-    
+
     saverequested: bool = messagebox.askyesnocancel("Exit", "Some changes hasn't been saved. Do you want to save before exiting?")
-    if saverequested == True: 
+    if saverequested:
         savefile()
         root.destroy()
-    if saverequested == False: 
-        root.destroy()
-    if saverequested is None:
+    elif saverequested is None:
         return
+    elif not saverequested:
+        root.destroy()
 
-
-somethingHasChangedFlag: bool = False
 
 root = tk.Tk()
 root.title("DBeaver Credentialsmanager")
@@ -194,7 +207,6 @@ root.protocol('WM_DELETE_WINDOW', exitApplication)
 
 # icon
 if os.name == 'nt':
-    from ctypes import windll  # Only exists on Windows.
     myappid = "vttr.dbeaver_credentialsmanager.1"
     windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
