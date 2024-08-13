@@ -19,7 +19,6 @@ def encrypt(newpass: str) -> str:
 
 
 def decrypt(password: str) -> str:
-    # OwEKLE4jpQ==    => Hello
     data_bin = base64.b64decode(password)
     output = bytearray(b"")
 
@@ -27,9 +26,3 @@ def decrypt(password: str) -> str:
         output.append(data_bin[i] ^ PASSWORD_ENCRYPTION_KEY[i % len(PASSWORD_ENCRYPTION_KEY)])
 
     return output[:-2].decode('utf-8')
-
-
-# Test the encrypt function
-# password = "Hello"
-# encrypted_password = encrypt(password)
-# print(f"Das Ergebnis: {encrypted_password}")

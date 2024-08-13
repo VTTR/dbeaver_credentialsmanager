@@ -39,7 +39,6 @@ def callAboutWindow():
 
     about_window = tk.Toplevel()
     about_window.title("About")
-    # about_window.config(width=400, height=300)
     about_window.geometry("400x300")
     ttk.Button(about_window, text="close", command=about_window.destroy).pack(side=tk.BOTTOM)
 
@@ -49,15 +48,15 @@ def callAboutWindow():
 
 
 def callVersionWindow():
-    messagebox.showinfo("Version","running on Version 1")
+    messagebox.showinfo("Version", "running on Version 1")
 
 
 def openFileSelector():
     path = filedialog.askopenfile(
-        title="Datei öffnen",
+        title="Open file",
         filetypes=(
-            ("XML-Files", "*.xml"),
-            ("All-Files", "*.*")
+            ("XML files", "*.xml"),
+            ("all fFiles", "*.*")
         )
     ).name
     pathvariable.set(path)
@@ -89,7 +88,7 @@ def togglePasswordVisibility():
     renderTable(mainframe)
 
 
-def autodetect():
+def autodetect() -> str:
     print("autodetection started")
     possiblepaths = [
         r'C:/ProgramData/DBeaver/configuration/.dbeaver4/General/.dbeaver-data-sources.xml'
@@ -202,7 +201,7 @@ def exitApplication() -> None:
 root = tk.Tk()
 root.title("DBeaver Credentialsmanager")
 root.geometry("900x500")
-root.minsize(900,500)
+root.minsize(900, 500)
 root.protocol('WM_DELETE_WINDOW', exitApplication)
 
 # icon
@@ -222,81 +221,79 @@ root.iconphoto(False, img, img)
 menu = tk.Menu(root)
 root.config(menu=menu)
 
-# Menü: Datei
+# menu: file
 filemenu = tk.Menu(menu, tearoff=0)
-menu.add_cascade(label="Datei", menu=filemenu)
-filemenu.add_command(label="Datei öffnen..", command=openFileSelector)
+menu.add_cascade(label="File", menu=filemenu)
+filemenu.add_command(label="Open file..", command=openFileSelector)
 filemenu.add_command(label="Exit", command=exitApplication)
 
-# Menu: Auswahl
+# menu: selection
 selectionmenu = tk.Menu(menu, tearoff=0)
-menu.add_cascade(label="Auswahl", menu=selectionmenu)
-selectionmenu.add_command(label="Alles auswählen", command=selectAll)
-selectionmenu.add_command(label="Alles abwählen", command=deselectAll)
-selectionmenu.add_command(label="Auswahl umkehren", command=invertSelection)
+menu.add_cascade(label="Selection", menu=selectionmenu)
+selectionmenu.add_command(label="Select all", command=selectAll)
+selectionmenu.add_command(label="Deselect all", command=deselectAll)
+selectionmenu.add_command(label="Invert selection", command=invertSelection)
 
-# Menu: Über
+# menu: about
 aboutmenu = tk.Menu(menu, tearoff=0)
-menu.add_cascade(label="Über", menu=aboutmenu)
+menu.add_cascade(label="About", menu=aboutmenu)
 aboutmenu.add_command(label="Version", command=callVersionWindow)
-aboutmenu.add_command(label="Über", command=callAboutWindow)
+aboutmenu.add_command(label="About", command=callAboutWindow)
 
 menu.add_command(label="Exit", command=exitApplication)
 
-# Pfad-Frame
+# path-frame
 pathframe = tk.Frame(root, pady=5, padx=5)
 pathframe.pack(side=tk.TOP, fill='x')
 
 autodetectbutton = ttk.Button(pathframe)
-autodetectbutton.configure(text="Auto-Detect", command=lambda: pathvariable.set(autodetect()))
+autodetectbutton.configure(text="auto-detect", command=lambda: pathvariable.set(autodetect()))
 autodetectbutton.pack(side=tk.LEFT, padx=5)
 
 pathvariable = tk.StringVar()
 pathinput = ttk.Entry(pathframe, textvariable=pathvariable, validate='focusin', validatecommand=openFileSelector)
 pathinput.pack(side=tk.RIGHT, expand=True, fill='x', padx=5)
 
-#ttk.Separator(root).pack(side=tk.TOP, fill='x', padx=0, pady=5)
-# Options-Frame
+# options-frame
 optionsframe = tk.Frame(root, pady=5, padx=5)
 optionsframe.pack(side=tk.TOP, fill='x')
 
 loadbutton = ttk.Button(optionsframe, command=loadfile)
-loadbutton.configure(text="Laden")
+loadbutton.configure(text="load")
 loadbutton.pack(side=tk.LEFT)
 
 savebutton = ttk.Button(optionsframe, command=savefile)
-savebutton.configure(text="Speichern")
+savebutton.configure(text="save")
 savebutton.pack(side=tk.LEFT)
 
 showPasswordValue = tk.IntVar()
 showPassword = ttk.Checkbutton(optionsframe, command=togglePasswordVisibility)
-showPassword.configure(text="zeige Password")
+showPassword.configure(text="display password")
 showPassword.state(['!alternate']) # init with option disabled
 showPassword.pack(side=tk.RIGHT)
 
-# Main-Frame
+# main-frame
 mainframe = tk.Frame(root, padx=5, pady=5)
 mainframe.pack(side=tk.TOP, fill='both', expand=True)
 renderTable(mainframe)
 
-# Footer-Frame
+# footer-frame
 footerframe = tk.Frame(root)
 footerframe.pack(side=tk.BOTTOM, fill='x')
 ttk.Separator(footerframe).pack(side=tk.TOP, expand=True, fill='x', pady=10)
-#ttk.Label(footerframe, text="© Fabian Vetter (2024)").pack(side=tk.LEFT)
 ttk.Label(footerframe, text="© Fabian Vetter (2024)").place(relx=0.5, rely=0.6, anchor=tk.CENTER)
 ttk.Sizegrip(footerframe).pack(side=tk.RIGHT)
 
-# Action-Frame
+# action-frame
 actionframe = tk.Frame(root, padx=5, pady=2)
 actionframe.pack(side=tk.BOTTOM, fill='x')
 
 userbutton = ttk.Button(actionframe, command=setNewUser)
-userbutton.configure(text="setze User",padding=5)
+userbutton.configure(text="set user", padding=5)
 userbutton.pack(side=tk.LEFT, padx=5)
 
 passwordbutton = ttk.Button(actionframe, command=setNewPassword)
-passwordbutton.configure(text="setze Password", padding=5)
+passwordbutton.configure(text="set password", padding=5)
 passwordbutton.pack(side=tk.LEFT, padx=5)
 
 renderDBeaverRunningWarning()
