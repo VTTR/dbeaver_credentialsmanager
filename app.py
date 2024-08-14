@@ -8,6 +8,7 @@ from tkinter import messagebox
 from tkinter import simpledialog
 from tkinter import filedialog
 from tkinter import ttk
+import webbrowser
 
 from xmlhandler import XMLHandler
 from dbeavercrypto import decrypt, encrypt
@@ -27,28 +28,8 @@ def savefile():
     somethingHasChangedFlag = False
 
 
-def _notImplemented():
-    print("not implemented")
-    pass
-
-
-def callAboutWindow():
-    import webbrowser
-    def callback(url: str):
-        webbrowser.open_new(url)
-
-    about_window = tk.Toplevel()
-    about_window.title("About")
-    about_window.geometry("400x300")
-    ttk.Button(about_window, text="close", command=about_window.destroy).pack(side=tk.BOTTOM)
-
-    repolink = tk.Label(about_window, text="Github-Repository", fg="blue", cursor="hand2")
-    repolink.pack()
-    repolink.bind("<Button-1>", lambda e: callback("https://github.com/VTTR/dbeaver_credentialsmanager"))
-
-
-def callVersionWindow():
-    messagebox.showinfo("Version", "running on Version 1")
+def openRepositoryInBrowser():
+    webbrowser.open_new("https://github.com/VTTR/dbeaver_credentialsmanager")
 
 
 def openFileSelector():
@@ -235,11 +216,9 @@ selectionmenu.add_command(label="Deselect all", command=deselectAll)
 selectionmenu.add_command(label="Invert selection", command=invertSelection)
 
 # menu: about
-aboutmenu = tk.Menu(menu, tearoff=0)
-menu.add_cascade(label="About", menu=aboutmenu)
-aboutmenu.add_command(label="Version", command=callVersionWindow)
-aboutmenu.add_command(label="About", command=callAboutWindow)
+menu.add_command(label="About", command=openRepositoryInBrowser)
 
+# menu: exit
 menu.add_command(label="Exit", command=exitApplication)
 
 # path-frame
